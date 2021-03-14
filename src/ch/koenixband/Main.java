@@ -1,10 +1,9 @@
 package ch.koenixband;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -12,14 +11,47 @@ public class Main {
     public static final String DIVIDER = "-----------------------------------------------------------------------------------------------------";
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Enter lowest midi note");
-        Scanner scanner = new Scanner(new InputStreamReader(System.in));
-        int lowestNote = scanner.nextInt();
+               Scanner scanner = new Scanner(new InputStreamReader(System.in));
+        HashMap<Integer, File> possibleFiles = new HashMap<>();
+        int fileIndex = 0;
+        for (File file : new File(System.getProperty("user.dir")).listFiles()) {
+            if (file.isFile()) {
+                if (file.getName().endsWith(".txt")) {
+                    possibleFiles.put(fileIndex, file);
+                    fileIndex++;
+                }
+            }
+        }
+        System.out.println("");
+        System.out.println("0) create new open fingering");
+        for (int i = 0; i < possibleFiles.size(); i++) {
+            System.out.println((i + 1) + ") load " + possibleFiles.get(i).getName());
+        }
+        System.out.println("");
+        System.out.println("Choose option");
+        int option = scanner.nextInt();
         scanner.nextLine();
+        if (option == 0) {
+            new NewOpenFingeringCreator(scanner).createNewfingering();
+            return;
+        }
 
-        System.out.println("Default pitch of bottom");
-        int bottomPitch = scanner.nextInt();
-        scanner.nextLine();
+        System.out.println("Invalid command");
+       /* option--;
+        if (!possibleFiles.containsKey(option)) {
+            System.out.println("Invalid command!");
+            throw new RuntimeException("Invalid command");
+        }
+        inputFile = possibleFiles.get(option);
+        FingeringFileReader fileReader = new FingeringFileReader(inputFile);
+        String fingeringName = fileReader.readFingeringName();
+        if (fingeringName != null) {
+            this.fingeringName = fingeringName;
+        } else {
+            System.out.println("Enter fingering name");
+            this.fingeringName = scanner.nextLine().toUpperCase();
+        }
+
 
         FileHolder fileHolder = new FileHolder(scanner);
         boolean changePitch = false;
@@ -57,5 +89,7 @@ public class Main {
         }
 
         new FingeringFileWriter(fileHolder.outputFile).writeFingerings(fileHolder.fingeringName, fingeringPositions);
+
+        */
     }
 }

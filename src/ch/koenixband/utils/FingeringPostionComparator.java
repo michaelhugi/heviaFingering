@@ -1,4 +1,6 @@
-package ch.koenixband;
+package ch.koenixband.utils;
+
+import ch.koenixband.fingering.FingeringPosition;
 
 import java.util.Comparator;
 
@@ -11,11 +13,11 @@ public class FingeringPostionComparator implements Comparator<FingeringPosition>
 
     @Override
     public int compare(FingeringPosition o1, FingeringPosition o2) {
-        if (o1.id > o2.id) {
+        if (o1.getId() > o2.getId()) {
             if (reverse) return 1;
             return -1;
         }
-        if (o2.id > o1.id) {
+        if (o2.getId() > o1.getId()) {
             if (reverse) return -1;
             return 1;
         }

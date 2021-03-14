@@ -1,17 +1,16 @@
 package ch.koenixband;
 
+import ch.koenixband.file.FingeringFileWriter;
 import ch.koenixband.fingering.Fingering;
 import ch.koenixband.fingering.FingeringPosition;
 import ch.koenixband.fingeringchanger.FingeringPositionUpdater;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 /**
- * Creates a rough fingering without semi-tones just by asking the user to input the basic open fingerings. This fingering can be edited by a second run
+ * Creates a rough open fingering without semi-tones just by asking the user to input the basic open fingerings. This fingering can be edited by a second run
  */
-public class NewFingeringCreator {
+public class NewOpenFingeringCreator {
     /**
      * The scanner to read human input
      */
@@ -22,37 +21,55 @@ public class NewFingeringCreator {
      *
      * @param scanner the scanner for human input
      */
-    public NewFingeringCreator(Scanner scanner) {
+    public NewOpenFingeringCreator(Scanner scanner) {
         this.scanner = scanner;
     }
 
     /**
-     * Creates a new rough fingering by asking the user some questions
+     * Creates a new rough open fingering by asking the user some questions
      */
     public void createNewfingering() {
-        Fingering fingering = new Fingering(
-                getFingeringName(),
-                getLowestMidiNote(),
-                getDefaultBottomPitch(),
-                getDefaultHoleClosedPitch());
+        FingeringPositionUpdater updater = new FingeringPositionUpdater(
+                new Fingering(
+                        getFingeringName(),
+                        getLowestMidiNote(),
+                        getDefaultBottomPitch(),
+                        getDefaultHoleClosedPitch()),
+                scanner
+        );
 
-        int[] ids = new int[]{
-                Integer.parseInt("000000000", 2),
-                Integer.parseInt("000000001", 2),
-                Integer.parseInt("000000011", 2),
-                Integer.parseInt("000000111", 2),
-                Integer.parseInt("000001111", 2),
-                Integer.parseInt("000011111", 2),
-                Integer.parseInt("000111111", 2),
-                Integer.parseInt("001111111", 2),
-                Integer.parseInt("011111111", 2),
-                Integer.parseInt("111111111", 2)
-        };
+        //g
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0000   1"), updater.getFingering().getLowestMidiNote(), false, true);
+        //gis
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0000   0"), updater.getFingering().getLowestMidiNote() + 1, false, true);
+        //a
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0001   1"), updater.getFingering().getLowestMidiNote() + 2, false, true);
+        //ais
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0010   1"), updater.getFingering().getLowestMidiNote() + 3, false, true);
+        //b
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0011   1"), updater.getFingering().getLowestMidiNote() + 4, false, true);
+        //c
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0111   1"), updater.getFingering().getLowestMidiNote() + 5, true, true);
+        //d
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 1111   1"), updater.getFingering().getLowestMidiNote() + 7, true, true);
+        //e
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 001 1111   1"), updater.getFingering().getLowestMidiNote() + 9, true, true);
+        //fis
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 011 1111   1"), updater.getFingering().getLowestMidiNote() + 11, true, true);
+        //g
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 101 1111   1"), updater.getFingering().getLowestMidiNote() + 12, true, true);
+        //gis
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 111 1111   1"), updater.getFingering().getLowestMidiNote() + 13, true, true);
+        //a
+        updater.updateFingeringByUser(new FingeringPosition(false, "1 101 1111   1"), updater.getFingering().getLowestMidiNote() + 14, true, true);
+        //f
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 010 1111   1"), updater.getFingering().getLowestMidiNote() + 10, true, true);
+        //dis
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 001 0111   1"), updater.getFingering().getLowestMidiNote() + 8, true, true);
+        //cis
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0100   1"), updater.getFingering().getLowestMidiNote() + 6, false, true);
 
-        FingeringPositionUpdater updater = new FingeringPositionUpdater(fingering);
-        for (int id : ids) {
-            updater.updateFingeringByUser(new FingeringPosition(id), scanner);
-        }
+        new FingeringFileWriter(updater.getFingering()).writeFile();
 
     }
 

@@ -1,4 +1,4 @@
-package ch.koenixband;
+package ch.koenixband.utils;
 
 public class MidiNote {
     public static String toReadable(int number) {

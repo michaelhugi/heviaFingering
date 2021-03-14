@@ -1,4 +1,4 @@
-package ch.koenixband.utils;
+package ch.koenixband.file;
 
 import ch.koenixband.fingering.FingeringPosition;
 
@@ -48,7 +48,7 @@ public class FingeringFileReader {
             while (line != null) {
                 if (line.startsWith("ADD")) {
                     FingeringPosition position = new FingeringPosition(lineNumber, line);
-                    positions.put(position.id, position);
+                    positions.put(position.getId(), position);
                 }
                 line = reader.readLine();
                 lineNumber++;

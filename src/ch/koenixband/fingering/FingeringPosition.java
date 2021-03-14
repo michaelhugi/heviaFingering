@@ -1,4 +1,6 @@
-package ch.koenixband;
+package ch.koenixband.utils;
+
+import ch.koenixband.Main;
 
 import java.util.ArrayList;
 import java.util.List;

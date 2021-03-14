@@ -1,4 +1,6 @@
-package ch.koenixband;
+package ch.koenixband.utils;
+
+import ch.koenixband.fingering.FingeringPosition;
 
 import java.io.BufferedReader;
 import java.io.File;

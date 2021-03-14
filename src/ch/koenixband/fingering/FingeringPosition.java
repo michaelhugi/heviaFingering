@@ -1,6 +1,8 @@
 package ch.koenixband.fingering;
 
 import ch.koenixband.Main;
+import ch.koenixband.file.FingeringFileWriter;
+import ch.koenixband.utils.FingeringPatternCalculator;
 import ch.koenixband.utils.MidiNote;
 
 /**
@@ -11,10 +13,7 @@ public class FingeringPosition {
      * The maximum id the first octave can have
      */
     public static final int MAX_ID_OF_OCTAVE_1 = 511;
-    /**
-     * The length of the binary representation of the fingering.
-     */
-    private static final int BINARY_PATTERN_LENGTH = 10;
+
     /**
      * Mask for determine if the bottom hole is closed depending on the id of the fingering
      */
@@ -212,7 +211,6 @@ public class FingeringPosition {
      * @param id        The id represents the binary pattern of the fingering
      */
     public FingeringPosition(boolean isVibrato, int id) {
-        String binary = Integer.toBinaryString(id);
         this.isVibrato = isVibrato;
         this.id = id;
     }
@@ -225,18 +223,7 @@ public class FingeringPosition {
      * @return The binary pattern representing the id
      */
     public char[] getBinaryPattern() {
-        char[] out = new char[BINARY_PATTERN_LENGTH];
-        for (int i = 0; i < BINARY_PATTERN_LENGTH; i++) {
-            out[i] = '0';
-        }
-
-        char[] items = Integer.toBinaryString(id).toCharArray();
-        int j = BINARY_PATTERN_LENGTH - 1;
-        for (int i = items.length - 1; i >= 0; i--) {
-            out[j] = items[i];
-            j--;
-        }
-        return out;
+        return FingeringPatternCalculator.getBinaryPattern(id);
     }
 
     /**
@@ -435,7 +422,8 @@ public class FingeringPosition {
      * @return The line to add to the file for hevia bagpipes to read it
      */
     public String writeLineInTextFile(String fingeringName) {
-        return "ADD " + fingeringName + " " + octave() + " " +
+        return (isVibrato ? "" : "----Stable"+ FingeringFileWriter.NEW_LINE) +
+                "ADD " + fingeringName + " " + octave() + " " +
                 (leftThumbClosed() ? "ON " : "OFF ") +
 
                 (leftIndexClosed() ? "ON " : "OFF ") +
@@ -449,25 +437,6 @@ public class FingeringPosition {
 
                 (bottomClosed() ? "ON " : "OFF ") +
                 MidiNote.toReadable(midiNote) + " " + midiNote + " " + pitch;
-    }
-
-    /**
-     * True if for this fingering, the equivalent with closed bottom should be auto created with the default pitch
-     *
-     * @return True, if this fingering should be added twice with the bottom hole
-     */
-    public boolean autoAddBottomClosed() {
-        if (!leftThumbClosed()) return true;
-
-        if (!leftIndexClosed()) return true;
-        if (!leftMiddleClosed()) return true;
-        if (!leftRingClosed()) return true;
-
-        if (!rightIndexClosed()) return true;
-        if (!rightMiddleClosed()) return true;
-        if (!rightRingClosed()) return true;
-
-        return false;
     }
 
     /**

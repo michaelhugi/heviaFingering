@@ -1,6 +1,7 @@
 package ch.koenixband.fingeringchanger;
 
 import ch.koenixband.fingering.Fingering;
+import ch.koenixband.fingering.FingeringOctaveAndBottomCalculator;
 import ch.koenixband.fingering.FingeringPosition;
 import ch.koenixband.fingering.FingeringPositionVibratoCalculator;
 import ch.koenixband.utils.MidiNote;
@@ -34,12 +35,10 @@ public class FingeringPositionUpdater {
     /**
      * Lets the user decide what note a fingering is, except when autoNote is inserted. In that case the method will just put this note without asking and go on
      *
-     * @param fingeringPosition       The fingering position to update
-     * @param autoNote                If not 0, the user won't be asked for the note but the note will apply itself
-     * @param addVibratos             If true, all variants on the fingering will be created with a default pitch (vibratos). All variants will override other fingerings if they are vibratos.
-     * @param allowReplaceNonVibratos If true, the fingering position will replace eventual finger position will override any existing position, otherwise it will only replace fingering positions that are vibratos. This is used to auto-add vibratos.
+     * @param fingeringPosition The fingering position to update
+     * @param autoNote          If not 0, the user won't be asked for the note but the note will apply itself
      */
-    public void updateFingeringByUser(FingeringPosition fingeringPosition, int autoNote, boolean addVibratos, boolean allowReplaceNonVibratos) {
+    public void updateFingeringByUser(FingeringPosition fingeringPosition, int autoNote) {
         fingeringPosition.printFintering(fingering.getLowestMidiNote());
         final int midiNote;
         final int pitch;
@@ -55,13 +54,14 @@ public class FingeringPositionUpdater {
 
         fingeringPosition.setMidiNote(midiNote);
         fingeringPosition.setPitch(pitch);
-        fingering.addOrReplaceFingeringPosition(fingeringPosition, allowReplaceNonVibratos);
-        addAutoCreated(fingeringPosition, allowReplaceNonVibratos);
-        if (addVibratos) {
-            for (FingeringPosition vibrato : new FingeringPositionVibratoCalculator(fingeringPosition).calculateVibratos(fingering.getDefaultPitch())) {
-                updateFingeringByUser(vibrato, vibrato.midiNote(), false, false);
-            }
+        fingering.addOrReplaceFingeringPosition(fingeringPosition);
+        fingering.addOrReplaceFingeringPosition(new FingeringOctaveAndBottomCalculator(fingeringPosition, fingering.getDefaultBottomPitch()).calculateOctaveAndClosedBottom());
+
+        for (FingeringPosition vibrato : new FingeringPositionVibratoCalculator(fingeringPosition).calculateVibratos(fingering.getDefaultPitch())) {
+            fingering.addOrReplaceFingeringPosition(vibrato);
+            fingering.addOrReplaceFingeringPosition(new FingeringOctaveAndBottomCalculator(vibrato, fingering.getDefaultBottomPitch()).calculateOctaveAndClosedBottom());
         }
+
     }
 
 
@@ -96,77 +96,6 @@ public class FingeringPositionUpdater {
             return getMidiNoteAndPitch();
         }
 
-    }
-
-    /**
-     * Adds the variants with the bottom hole closed and the octave. Bottom hole options will not be made on fingerings below a certain point. see autoAddBottomClosed on fingeringPosition
-     *
-     * @param basicFingeringPostion   The fingering position of what the options in the octave and with closed bottom holes should be made.
-     * @param allowReplaceNonVibratos If true, the fingering position will replace eventual finger position will override any existing position, otherwise it will only replace fingering positions that are vibratos. This is used to auto-add vibratos.
-     */
-    private void addAutoCreated(FingeringPosition basicFingeringPostion, boolean allowReplaceNonVibratos) {
-        addBottomHoleClosed(basicFingeringPostion);
-        addOctave(basicFingeringPostion, allowReplaceNonVibratos);
-    }
-
-    /**
-     * Adds the octave option and it's option with bottom hole closed of a fingering position to the fingering.
-     *
-     * @param basicFingeringPosition  The basic fingering position from where to add the octave option
-     * @param allowReplaceNonVibratos If true, the fingering position will replace eventual finger position will override any existing position, otherwise it will only replace fingering positions that are vibratos. This is used to auto-add vibratos.
-     */
-    private void addOctave(FingeringPosition basicFingeringPosition, boolean allowReplaceNonVibratos) {
-        FingeringPosition position = new FingeringPosition(
-                basicFingeringPosition.isVibrato(),
-                2,
-                basicFingeringPosition.leftThumbClosed(),
-
-                basicFingeringPosition.leftIndexClosed(),
-                basicFingeringPosition.leftMiddleClosed(),
-                basicFingeringPosition.leftRingClosed(),
-
-                basicFingeringPosition.rightIndexClosed(),
-                basicFingeringPosition.rightMiddleClosed(),
-                basicFingeringPosition.rightRingClosed(),
-                basicFingeringPosition.rightSmallClosed(),
-
-                basicFingeringPosition.bottomClosed()
-        );
-        position.setPitch(basicFingeringPosition.pitch());
-        position.setMidiNote(basicFingeringPosition.midiNote() + 12);
-        fingering.addOrReplaceFingeringPosition(position, allowReplaceNonVibratos);
-        addBottomHoleClosed(position);
-    }
-
-    /**
-     * Adds the option of the fingering with the bottom hole closed
-     *
-     * @param basicFingeringPosition The basic fingering from what the bottom hole closed option should be made.
-     */
-    private void addBottomHoleClosed(FingeringPosition basicFingeringPosition) {
-        if (!basicFingeringPosition.autoAddBottomClosed()) {
-            return;
-        }
-        FingeringPosition position = new FingeringPosition(
-                true,
-                basicFingeringPosition.octave(),
-                basicFingeringPosition.leftThumbClosed(),
-
-                basicFingeringPosition.leftIndexClosed(),
-                basicFingeringPosition.leftMiddleClosed(),
-                basicFingeringPosition.leftRingClosed(),
-
-                basicFingeringPosition.rightIndexClosed(),
-                basicFingeringPosition.rightMiddleClosed(),
-                basicFingeringPosition.rightRingClosed(),
-                basicFingeringPosition.rightSmallClosed(),
-
-                true
-        );
-
-        position.setPitch(basicFingeringPosition.pitch() + fingering.getDefaultBottomPitch());
-        position.setMidiNote(basicFingeringPosition.midiNote());
-        fingering.addOrReplaceFingeringPosition(position, false);
     }
 
     /**

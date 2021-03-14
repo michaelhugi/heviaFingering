@@ -20,18 +20,23 @@ public class FingeringPositionVibratoCalculator {
         int maxIdForVibrato = calcMaxIdForVibrato();
         List<FingeringPosition> vibratos = new ArrayList<>();
         for (int i = 0; i <= maxIdForVibrato; i++) {
-
-            int id = i + fingeringPosition.getId();
             //Do not override bottoms
-            if (id % 2 == 0) {
+            if (i % 2 != 0) {
+                char[] fingeringPattern = fingeringPosition.getBinaryPattern();
+                char[] vibratoPattern = Integer.toBinaryString(i).toCharArray();
+                int offset = fingeringPattern.length - vibratoPattern.length;
                 int numberOfFingers = 0;
-                String binaryPatern = Integer.toBinaryString(i);
-                for (char c : binaryPatern.toCharArray()) {
-                    if (c == '1') {
+                for (int j = 0; j < vibratoPattern.length; j++) {
+                    fingeringPattern[j + offset] = vibratoPattern[j];
+                    if (vibratoPattern[j] == '1') {
                         numberOfFingers++;
                     }
                 }
-                FingeringPosition vibrato = new FingeringPosition(true, id);
+                String idString = "";
+                for (char c : fingeringPattern) {
+                    idString += c;
+                }
+                FingeringPosition vibrato = new FingeringPosition(true, Integer.parseInt(idString, 2));
                 vibrato.setMidiNote(fingeringPosition.midiNote());
                 vibrato.setPitch(vibratoPitch * numberOfFingers);
                 vibratos.add(vibrato);
@@ -52,11 +57,15 @@ public class FingeringPositionVibratoCalculator {
             index++;
         }
         String pattern = "";
-        for (int i = 0; i < (binaryPatternWithoutOctave.length - index); i++) {
+
+        for (int i = 0; i < (binaryPatternWithoutOctave.length - index + 1); i++) {
             pattern += "1";
         }
-
-        return Integer.parseInt(pattern, 2);
+        try {
+            return Integer.parseInt(pattern, 2);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     /**
@@ -73,7 +82,7 @@ public class FingeringPositionVibratoCalculator {
             }
             index--;
         }
-        return index;
+        return 0;
     }
 
     /**
@@ -83,11 +92,13 @@ public class FingeringPositionVibratoCalculator {
      */
     private boolean isCrossFingering() {
         boolean openFound = false;
+        boolean hasClosed = false;
         for (char c : calcBinaryPatternWithoutOctave()) {
             if (c == '0') {
                 if (openFound) {
                     return true;
                 }
+                hasClosed = true;
             }
             if (c == '1') {
                 openFound = true;

@@ -37,38 +37,38 @@ public class NewOpenFingeringCreator {
                         getDefaultHoleClosedPitch()),
                 scanner
         );
-
-        //g
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0000   1"), updater.getFingering().getLowestMidiNote(), false, true);
-        //gis
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0000   0"), updater.getFingering().getLowestMidiNote() + 1, false, true);
         //a
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0001   1"), updater.getFingering().getLowestMidiNote() + 2, false, true);
-        //ais
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0010   1"), updater.getFingering().getLowestMidiNote() + 3, false, true);
-        //b
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0011   1"), updater.getFingering().getLowestMidiNote() + 4, false, true);
-        //c
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0111   1"), updater.getFingering().getLowestMidiNote() + 5, true, true);
-        //d
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 1111   1"), updater.getFingering().getLowestMidiNote() + 7, true, true);
-        //e
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 001 1111   1"), updater.getFingering().getLowestMidiNote() + 9, true, true);
+     /*   updater.updateFingeringByUser(new FingeringPosition(false, "1 111 1111   1"), updater.getFingering().getLowestMidiNote() + 14);
+        updater.updateFingeringByUser(new FingeringPosition(false, "1 101 1111   1"), updater.getFingering().getLowestMidiNote() + 14);
+        //gis
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 111 1111   1"), updater.getFingering().getLowestMidiNote() + 13);
+        //g
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 101 1111   1"), updater.getFingering().getLowestMidiNote() + 12);
         //fis
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 011 1111   1"), updater.getFingering().getLowestMidiNote() + 11, true, true);
-        //g
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 101 1111   1"), updater.getFingering().getLowestMidiNote() + 12, true, true);
-        //gis
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 111 1111   1"), updater.getFingering().getLowestMidiNote() + 13, true, true);
-        //a
-        updater.updateFingeringByUser(new FingeringPosition(false, "1 101 1111   1"), updater.getFingering().getLowestMidiNote() + 14, true, true);
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 011 1111   1"), updater.getFingering().getLowestMidiNote() + 11);
         //f
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 010 1111   1"), updater.getFingering().getLowestMidiNote() + 10, true, true);
+   */    updater.updateFingeringByUser(new FingeringPosition(false, "0 010 1111   1"), updater.getFingering().getLowestMidiNote() + 10);
+        //e
+     /*    updater.updateFingeringByUser(new FingeringPosition(false, "0 001 1111   1"), updater.getFingering().getLowestMidiNote() + 9);
         //dis
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 001 0111   1"), updater.getFingering().getLowestMidiNote() + 8, true, true);
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 001 0111   1"), updater.getFingering().getLowestMidiNote() + 8);
+        //d
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 1111   1"), updater.getFingering().getLowestMidiNote() + 7);
+        //c
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0111   1"), updater.getFingering().getLowestMidiNote() + 5);
         //cis
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0100   1"), updater.getFingering().getLowestMidiNote() + 6, false, true);
-
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0100   1"), updater.getFingering().getLowestMidiNote() + 6);
+        //b
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0011   1"), updater.getFingering().getLowestMidiNote() + 4);
+        //a
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0001   1"), updater.getFingering().getLowestMidiNote() + 2);
+        //ais
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0010   1"), updater.getFingering().getLowestMidiNote() + 3);
+        //g
+         updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0000   1"), updater.getFingering().getLowestMidiNote());
+        //gis
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0000   0"), updater.getFingering().getLowestMidiNote() + 1);
+*/
         new FingeringFileWriter(updater.getFingering()).writeFile();
 
     }

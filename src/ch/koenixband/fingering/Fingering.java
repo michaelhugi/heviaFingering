@@ -18,19 +18,23 @@ public class Fingering {
         this.lowestMidiNote = lowestMidiNote;
     }
 
-    public void addOrReplaceFingeringPosition(FingeringPosition fingeringPosition, boolean allowReplaceNonVibratos) {
-        if (allowReplaceNonVibratos) {
+    public void addOrReplaceFingeringPosition(List<FingeringPosition> fingeringPositions) {
+        for (FingeringPosition fingeringPosition : fingeringPositions) {
+            addOrReplaceFingeringPosition(fingeringPosition);
+        }
+    }
+
+    public void addOrReplaceFingeringPosition(FingeringPosition fingeringPosition) {
+        if (!fingeringPosition.isVibrato()) {
             fingeringPositions.put(fingeringPosition.getId(), fingeringPosition);
             return;
         }
-        if (!fingeringPositions.containsKey(fingeringPosition.getId())) {
-            fingeringPositions.put(fingeringPosition.getId(), fingeringPosition);
-            return;
+        if (fingeringPositions.containsKey(fingeringPosition.getId())) {
+            if (!fingeringPositions.get(fingeringPosition.getId()).isVibrato()) {
+                return;
+            }
         }
-        if (fingeringPositions.get(fingeringPosition.getId()).isVibrato()) {
-            fingeringPositions.put(fingeringPosition.getId(), fingeringPosition);
-            return;
-        }
+        fingeringPositions.put(fingeringPosition.getId(), fingeringPosition);
     }
 
     public int getLowestMidiNote() {

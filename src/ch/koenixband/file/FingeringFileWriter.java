@@ -20,7 +20,7 @@ public class FingeringFileWriter {
     /**
      * New line dependent on the OS
      */
-    private static final String NEW_LINE = System.lineSeparator();
+    public static final String NEW_LINE = System.lineSeparator();
     /**
      * The output file
      */
@@ -128,7 +128,7 @@ public class FingeringFileWriter {
     private void writeFingeringsForNote(FileWriter writer, int note, List<FingeringPosition> fingeringPositions) throws IOException {
         if (note == 0) return;
         writer.write("----" + MidiNote.toReadable(note) + NEW_LINE);
-        Collections.sort(fingeringPositions, new FingeringPostionComparator(true));
+        Collections.sort(fingeringPositions, new FingeringPostionComparator(false));
         for (FingeringPosition position : fingeringPositions) {
             writer.write(position.writeLineInTextFile(fingering.getName()) + NEW_LINE);
         }

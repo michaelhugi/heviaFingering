@@ -1,6 +1,15 @@
 package ch.koenixband.utils;
 
+/**
+ * Helper class to get readable strings for midi notes
+ */
 public class MidiNote {
+    /**
+     * Says human readable what music note a midi note is
+     *
+     * @param number The midi note number
+     * @return The readable note based on the midi number
+     */
     public static String toReadable(int number) {
         int noteInOctave = number - 21;
         noteInOctave = noteInOctave % 12;

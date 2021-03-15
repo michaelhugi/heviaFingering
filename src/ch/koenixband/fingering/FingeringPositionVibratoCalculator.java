@@ -5,9 +5,20 @@ import ch.koenixband.utils.VibratoHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Calculates possible fibrato finger positions and their pitch
+ */
 public class FingeringPositionVibratoCalculator {
+    /**
+     * The fingering position of the note without vibrato
+     */
     private final FingeringPosition fingeringPosition;
 
+    /**
+     * Constructor
+     *
+     * @param fingeringPosition The fingering positions of the note without vibrato
+     */
     public FingeringPositionVibratoCalculator(FingeringPosition fingeringPosition) {
         this.fingeringPosition = fingeringPosition;
     }
@@ -31,34 +42,6 @@ public class FingeringPositionVibratoCalculator {
                 vibrato.setMidiNote(fingeringPosition.midiNote());
                 vibrato.setPitch(vibratoHolder.calcPitch(vibratoPitch));
                 vibratos.add(vibrato);
-
-/*                char[] fingeringPattern = fingeringPosition.getBinaryPattern();
-                char[] idVibratoPatternShort = Integer.toBinaryString(i).toCharArray();
-                char[] idVibratoPattern = binaryVibratoPattern.toCharArray();
-                for (int j = 0; j < idVibratoPattern.length; j++) {
-                    idVibratoPattern[j] = '0';
-                }
-                int patternOffset = idVibratoPattern.length - idVibratoPatternShort.length;
-                for (int j = 0; j < idVibratoPatternShort.length; j++) {
-                    idVibratoPattern[j + patternOffset] = idVibratoPatternShort[j];
-                }
-
-                int offset = fingeringPattern.length - idVibratoPattern.length;
-                int numberOfFingers = 0;
-                for (int j = 0; j < idVibratoPattern.length; j++) {
-                    fingeringPattern[j + offset] = idVibratoPattern[j];
-                    if (idVibratoPattern[j] == '1') {
-                        numberOfFingers++;
-                    }
-                }
-                String idString = "";
-                for (char c : fingeringPattern) {
-                    idString += c;
-                }
-                FingeringPosition vibrato = new FingeringPosition(true, Integer.parseInt(idString, 2));
-                vibrato.setMidiNote(fingeringPosition.midiNote());
-                vibrato.setPitch(vibratoPitch * numberOfFingers);
-                vibratos.add(vibrato);*/
             }
         }
         return vibratos;

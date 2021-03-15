@@ -6,10 +6,18 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * Main class for the application
+ */
 public class Main {
 
     public static final String DIVIDER = "-----------------------------------------------------------------------------------------------------";
 
+    /**
+     * Main method. User can input what he wants to do
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
                Scanner scanner = new Scanner(new InputStreamReader(System.in));
         HashMap<Integer, File> possibleFiles = new HashMap<>();
@@ -37,59 +45,6 @@ public class Main {
         }
 
         System.out.println("Invalid command");
-       /* option--;
-        if (!possibleFiles.containsKey(option)) {
-            System.out.println("Invalid command!");
-            throw new RuntimeException("Invalid command");
-        }
-        inputFile = possibleFiles.get(option);
-        FingeringFileReader fileReader = new FingeringFileReader(inputFile);
-        String fingeringName = fileReader.readFingeringName();
-        if (fingeringName != null) {
-            this.fingeringName = fingeringName;
-        } else {
-            System.out.println("Enter fingering name");
-            this.fingeringName = scanner.nextLine().toUpperCase();
-        }
 
-
-        FileHolder fileHolder = new FileHolder(scanner);
-        boolean changePitch = false;
-        int exclusiveNote = 0;
-
-        if (fileHolder.inputFile != null) {
-            System.out.println("What do you want to do?");
-            System.out.println("0) change fingering");
-            System.out.println("1) change vibratos");
-            changePitch = scanner.nextInt() == 1;
-            scanner.nextLine();
-            System.out.println("Enter midi note to change or 0 for all");
-            exclusiveNote = scanner.nextInt();
-            scanner.nextLine();
-        }
-
-
-        HashMap<Integer, FingeringPosition> fingeringPositions = new HashMap<>();
-        for (int id = 0; id < FingeringPosition.MAX_ID; id++) {
-            FingeringPosition position = new FingeringPosition(id);
-            fingeringPositions.put(position.id, position);
-        }
-        if (fileHolder.inputFile != null) {
-            new FingeringFileReader(fileHolder.inputFile).replaceExistingFingeringPositions(fingeringPositions);
-        }
-        List<FingeringPosition> autoUpdatedPostions = new ArrayList<>();
-        for (int id = 0; id < FingeringPosition.MAX_ID; id++) {
-            if (id <= FingeringPosition.MAX_MANUAL_BOTTOM_ID || id % 2 != 0) {
-                if (exclusiveNote == 0 || exclusiveNote == fingeringPositions.get(id).midiNote)
-                    autoUpdatedPostions.addAll(fingeringPositions.get(id).updateFingeringByUser(lowestNote, scanner, bottomPitch, changePitch));
-            }
-        }
-        for (FingeringPosition pos : autoUpdatedPostions) {
-            fingeringPositions.put(pos.id, pos);
-        }
-
-        new FingeringFileWriter(fileHolder.outputFile).writeFingerings(fileHolder.fingeringName, fingeringPositions);
-
-        */
     }
 }

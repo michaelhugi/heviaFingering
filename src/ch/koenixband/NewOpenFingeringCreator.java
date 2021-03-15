@@ -82,7 +82,7 @@ public class NewOpenFingeringCreator {
      * @return The name of the fingering
      */
     private String getFingeringName() {
-        if (true) return "hugi";
+        if (true) return "HUGI";
         System.out.println("Enter fingering name");
         String fingeringName = scanner.nextLine().toUpperCase();
         boolean valid = true;
@@ -156,7 +156,7 @@ public class NewOpenFingeringCreator {
      * @return The pitch
      */
     private int getDefaultHoleClosedPitch() {
-        if (true) return 9;
+        if (true) return 11;
         System.out.println("Default pitch of any hole closed");
         try {
             int pitch = scanner.nextInt();

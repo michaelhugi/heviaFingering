@@ -1,7 +1,6 @@
 package ch.koenixband.fingering;
 
 import ch.koenixband.utils.VibratoHolder;
-import ch.koenixband.utils.VibratoPatternHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +27,9 @@ public class FingeringPositionVibratoCalculator {
             //Do not override bottoms
             if (vibratoId % 2 != 0) {
                 VibratoHolder vibratoHolder = getTotalFingeringOfVibrato(fingeringPosition.getBinaryPattern(), vibratoId, vibratoMask);
-                FingeringPosition vibrato = new FingeringPosition(true, vibratoHolder.fibratoPattern);
+                FingeringPosition vibrato = new FingeringPosition(true, vibratoHolder.totalFingerPosition);
                 vibrato.setMidiNote(fingeringPosition.midiNote());
-                vibrato.setPitch(vibratoPitch * vibratoHolder.numberOfClosedVibratoFingers);
+                vibrato.setPitch(vibratoHolder.calcPitch(vibratoPitch));
                 vibratos.add(vibrato);
 
 /*                char[] fingeringPattern = fingeringPosition.getBinaryPattern();
@@ -74,8 +73,7 @@ public class FingeringPositionVibratoCalculator {
      * @return The fingering that describes the specifig vibrato fingering postion for a given midi note
      */
     private VibratoHolder getTotalFingeringOfVibrato(char[] fingeringPatternOfNote, int vibratoId, String vibratoMask) {
-        VibratoPatternHolder vibratoPatternHolder = createVibratoPatternWithLeadingZeros(vibratoId, vibratoMask);
-        char[] vibrato = vibratoPatternHolder.fibratoPattern;
+        char[] vibrato = createVibratoPatternWithLeadingZeros(vibratoId, vibratoMask);
         int offset = fingeringPatternOfNote.length - vibrato.length;
         for (int i = 0; i < vibrato.length; i++) {
             fingeringPatternOfNote[i + offset] = vibrato[i];
@@ -85,7 +83,7 @@ public class FingeringPositionVibratoCalculator {
             idString += c;
         }
         int totalVibratoId = Integer.parseInt(idString, 2);
-        return new VibratoHolder(totalVibratoId, vibratoPatternHolder.numberOfClosedVibratoFingers);
+        return new VibratoHolder(totalVibratoId, vibrato);
     }
 
     /**
@@ -119,15 +117,8 @@ public class FingeringPositionVibratoCalculator {
      * @param vibratoMask The vibrato mask defines which fingers are used for vibrato
      * @return The binary pattern fo a specific vibrato
      */
-    private VibratoPatternHolder createVibratoPatternWithLeadingZeros(int id, String vibratoMask) {
-        char[] pattern = toFixedLengthWithLeadingZeros(Integer.toBinaryString(id).toCharArray(), vibratoMask.length());
-        int fingerCount = 0;
-        for (char c : pattern) {
-            if (c == '0') {
-                fingerCount++;
-            }
-        }
-        return new VibratoPatternHolder(pattern, fingerCount);
+    private char[] createVibratoPatternWithLeadingZeros(int id, String vibratoMask) {
+        return toFixedLengthWithLeadingZeros(Integer.toBinaryString(id).toCharArray(), vibratoMask.length());
     }
 
     /**

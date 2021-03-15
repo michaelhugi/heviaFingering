@@ -3,7 +3,7 @@ This application enables to auto create fingerings for the hevia bagpipes with o
 
 Actually it's fixed to a a-minor german bagpipe fully chromatic. Input possibilities for the user are prepared but not active.
 
-##Fingering patterns
+## Fingering patterns
 The application works with fingering patterns from left to right. Left is top of the chanter. 0 is closed 1 is open.
 
 Examples: 
@@ -12,7 +12,7 @@ Examples:
 
 0 001 1111 1 is the pattern for the top three holes open
 
-##Vibrato mask
+## Vibrato mask
 Similar to fingering patterns vibrato masks can be implemented for any fingering. This will auto create all possible vibratos based on a non linear approach for the pitch based on the pitch of the first hole covered in the vibrato.
 
 Example 1:
@@ -33,5 +33,5 @@ Example 3
 
 0 000 0111 1 means that the bottom three fingers can be used for vibrato
 
-###Vibrato priority
+### Vibrato priority
 If vibratos are added for a fingering position, they will replace all other vibratos but not fingerings that are 'not vibratos'. So the order how the fingerings are added matters.

@@ -1,5 +1,5 @@
 # heviaFingering
-This application enables to auto create fingerings for the hevia bagpipes with open fingering patterns and their vibratos.
+This JAVA command line application enables to auto create fingerings for the hevia bagpipes with open fingering patterns and their vibratos.
 
 Actually it's fixed to a a-minor german bagpipe fully chromatic. Input possibilities for the user are prepared but not active.
 

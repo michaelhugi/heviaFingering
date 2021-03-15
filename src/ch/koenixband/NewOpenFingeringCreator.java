@@ -38,37 +38,40 @@ public class NewOpenFingeringCreator {
                 scanner
         );
         //a
-     /*   updater.updateFingeringByUser(new FingeringPosition(false, "1 111 1111   1"), updater.getFingering().getLowestMidiNote() + 14);
-        updater.updateFingeringByUser(new FingeringPosition(false, "1 101 1111   1"), updater.getFingering().getLowestMidiNote() + 14);
+        updater.updateFingeringByUser(new FingeringPosition(false, "1 111 1111   1"), " 111 1111   1", updater.getFingering().getLowestMidiNote() + 14);
         //gis
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 111 1111   1"), updater.getFingering().getLowestMidiNote() + 13);
-        //g
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 101 1111   1"), updater.getFingering().getLowestMidiNote() + 12);
-        //fis
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 011 1111   1"), updater.getFingering().getLowestMidiNote() + 11);
-        //f
-   */    updater.updateFingeringByUser(new FingeringPosition(false, "0 010 1111   1"), updater.getFingering().getLowestMidiNote() + 10);
-        //e
-     /*    updater.updateFingeringByUser(new FingeringPosition(false, "0 001 1111   1"), updater.getFingering().getLowestMidiNote() + 9);
-        //dis
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 001 0111   1"), updater.getFingering().getLowestMidiNote() + 8);
-        //d
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 1111   1"), updater.getFingering().getLowestMidiNote() + 7);
-        //c
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0111   1"), updater.getFingering().getLowestMidiNote() + 5);
-        //cis
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0100   1"), updater.getFingering().getLowestMidiNote() + 6);
-        //b
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0011   1"), updater.getFingering().getLowestMidiNote() + 4);
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 111 1111   1"), " 11 1111   1", updater.getFingering().getLowestMidiNote() + 13);
         //a
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0001   1"), updater.getFingering().getLowestMidiNote() + 2);
-        //ais
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0010   1"), updater.getFingering().getLowestMidiNote() + 3);
+        updater.updateFingeringByUser(new FingeringPosition(false, "1 101 1111   1"), "1 1111   1", updater.getFingering().getLowestMidiNote() + 14);
         //g
-         updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0000   1"), updater.getFingering().getLowestMidiNote());
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 101 1111   1"), "1 1111   1", updater.getFingering().getLowestMidiNote() + 12);
+        //fis
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 011 1111   1"), "1111   1", updater.getFingering().getLowestMidiNote() + 11);
+        //f
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 010 1111   1"), "1111   1", updater.getFingering().getLowestMidiNote() + 10);
+        //e
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 001 1111   1"), "1111   1", updater.getFingering().getLowestMidiNote() + 9);
+        //dis
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 001 0111   1"), "11   1", updater.getFingering().getLowestMidiNote() + 8);
+        //d
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 1111   1"), "111   1", updater.getFingering().getLowestMidiNote() + 7);
+        //c
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0111   1"), "11    1", updater.getFingering().getLowestMidiNote() + 5);
+        //cis
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0100   1"), "0", updater.getFingering().getLowestMidiNote() + 6);
+        //b
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0011   1"), "0", updater.getFingering().getLowestMidiNote() + 4);
+        //a
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0001   1"), "0", updater.getFingering().getLowestMidiNote() + 2);
+        //ais
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0010   1"), "0", updater.getFingering().getLowestMidiNote() + 3);
+        //g
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0000   1"), "0", updater.getFingering().getLowestMidiNote());
         //gis
-        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0000   0"), updater.getFingering().getLowestMidiNote() + 1);
-*/
+        updater.updateFingeringByUser(new FingeringPosition(false, "0 000 0000   0"), "0", updater.getFingering().getLowestMidiNote() + 1);
+
+        updater.getFingering().printMissingPatterns();
+
         new FingeringFileWriter(updater.getFingering()).writeFile();
 
     }
@@ -79,6 +82,7 @@ public class NewOpenFingeringCreator {
      * @return The name of the fingering
      */
     private String getFingeringName() {
+        if (true) return "hugi";
         System.out.println("Enter fingering name");
         String fingeringName = scanner.nextLine().toUpperCase();
         boolean valid = true;
@@ -104,7 +108,7 @@ public class NewOpenFingeringCreator {
      * @return The lowest midi note
      */
     private int getLowestMidiNote() {
-
+        if (true) return 55;
         System.out.println("Enter lowest midi note");
         try {
             int lowestNote = scanner.nextInt();
@@ -128,7 +132,7 @@ public class NewOpenFingeringCreator {
      * @return The pitch
      */
     private int getDefaultBottomPitch() {
-
+        if (true) return -13;
         System.out.println("Default pitch of bottom hole closed");
         try {
             int pitch = scanner.nextInt();
@@ -152,7 +156,7 @@ public class NewOpenFingeringCreator {
      * @return The pitch
      */
     private int getDefaultHoleClosedPitch() {
-
+        if (true) return 9;
         System.out.println("Default pitch of any hole closed");
         try {
             int pitch = scanner.nextInt();

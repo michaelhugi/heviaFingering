@@ -29,8 +29,8 @@ public class Main {
         }
         System.out.println("");
         System.out.println("Choose option");
-        int option = scanner.nextInt();
-        scanner.nextLine();
+        int option =0;//= scanner.nextInt();
+       //scanner.nextLine();
         if (option == 0) {
             new NewOpenFingeringCreator(scanner).createNewfingering();
             return;

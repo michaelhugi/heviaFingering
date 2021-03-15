@@ -1,5 +1,7 @@
 package ch.koenixband.fingering;
 
+import ch.koenixband.utils.FingeringPatternCalculator;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,5 +65,17 @@ public class Fingering {
             out.add(fingeringPositions.get(id));
         }
         return out;
+    }
+
+    public void printMissingPatterns() {
+        for (int i = 0; i < FingeringPosition.MAX_ID_OF_OCTAVE_1; i++) {
+            if (!fingeringPositions.containsKey(i)) {
+                String debug = "";
+                for (char c : FingeringPatternCalculator.getBinaryPattern(i)) {
+                    debug += c;
+                }
+                System.out.println("Missing pattern " + debug);
+            }
+        }
     }
 }

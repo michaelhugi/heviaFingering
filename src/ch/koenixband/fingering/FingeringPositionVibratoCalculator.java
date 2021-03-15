@@ -1,5 +1,8 @@
 package ch.koenixband.fingering;
 
+import ch.koenixband.utils.VibratoHolder;
+import ch.koenixband.utils.VibratoPatternHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,21 +17,38 @@ public class FingeringPositionVibratoCalculator {
      * Calculates all possible vibratos for a fingering
      *
      * @param vibratoPitch The pitch to add to a vibrato
+     * @param vibratoMask  The binary mask where vibrato is possible
      * @return All possible vibratos for a fingering
      */
-    public List<FingeringPosition> calculateVibratos(int vibratoPitch) {
-        int maxIdForVibrato = calcMaxIdForVibrato();
+    public List<FingeringPosition> calculateVibratos(int vibratoPitch, String vibratoMask) {
+        vibratoMask = vibratoMask.replace(" ", "").trim();
+        int maxIdForVibrato = getMaxIdForVibratoMask(vibratoMask);
         List<FingeringPosition> vibratos = new ArrayList<>();
-        for (int i = 0; i <= maxIdForVibrato; i++) {
+        for (int vibratoId = 0; vibratoId <= maxIdForVibrato; vibratoId++) {
             //Do not override bottoms
-            if (i % 2 != 0) {
-                char[] fingeringPattern = fingeringPosition.getBinaryPattern();
-                char[] vibratoPattern = Integer.toBinaryString(i).toCharArray();
-                int offset = fingeringPattern.length - vibratoPattern.length;
+            if (vibratoId % 2 != 0) {
+                VibratoHolder vibratoHolder = getTotalFingeringOfVibrato(fingeringPosition.getBinaryPattern(), vibratoId, vibratoMask);
+                FingeringPosition vibrato = new FingeringPosition(true, vibratoHolder.fibratoPattern);
+                vibrato.setMidiNote(fingeringPosition.midiNote());
+                vibrato.setPitch(vibratoPitch * vibratoHolder.numberOfClosedVibratoFingers);
+                vibratos.add(vibrato);
+
+/*                char[] fingeringPattern = fingeringPosition.getBinaryPattern();
+                char[] idVibratoPatternShort = Integer.toBinaryString(i).toCharArray();
+                char[] idVibratoPattern = binaryVibratoPattern.toCharArray();
+                for (int j = 0; j < idVibratoPattern.length; j++) {
+                    idVibratoPattern[j] = '0';
+                }
+                int patternOffset = idVibratoPattern.length - idVibratoPatternShort.length;
+                for (int j = 0; j < idVibratoPatternShort.length; j++) {
+                    idVibratoPattern[j + patternOffset] = idVibratoPatternShort[j];
+                }
+
+                int offset = fingeringPattern.length - idVibratoPattern.length;
                 int numberOfFingers = 0;
-                for (int j = 0; j < vibratoPattern.length; j++) {
-                    fingeringPattern[j + offset] = vibratoPattern[j];
-                    if (vibratoPattern[j] == '1') {
+                for (int j = 0; j < idVibratoPattern.length; j++) {
+                    fingeringPattern[j + offset] = idVibratoPattern[j];
+                    if (idVibratoPattern[j] == '1') {
                         numberOfFingers++;
                     }
                 }
@@ -39,101 +59,118 @@ public class FingeringPositionVibratoCalculator {
                 FingeringPosition vibrato = new FingeringPosition(true, Integer.parseInt(idString, 2));
                 vibrato.setMidiNote(fingeringPosition.midiNote());
                 vibrato.setPitch(vibratoPitch * numberOfFingers);
-                vibratos.add(vibrato);
+                vibratos.add(vibrato);*/
             }
         }
         return vibratos;
     }
 
     /**
-     * Calcs the max id of fingering that is interesting for vibrato purposes
+     * Calculates the new pattern for the fingering based on the fingering for the midi note, the vibratoPattern and the id of the vibrato. This will replace all fingerings that are described by the vibrato mask by the vibrato itself
      *
-     * @return The max id of fingering that is interesting for vibrato purposes
+     * @param fingeringPatternOfNote The fingering pattern of the midi note without vibrato
+     * @param vibratoId              The id of the vibrato
+     * @param vibratoMask            the mask of the vibrato
+     * @return The fingering that describes the specifig vibrato fingering postion for a given midi note
      */
-    private int calcMaxIdForVibrato() {
-        char[] binaryPatternWithoutOctave = calcBinaryPatternWithoutOctave();
-        int index = calcIndexOfFirstOpenHoleAfterLastClosed(binaryPatternWithoutOctave);
-        if (!isCrossFingering()) {
-            index++;
+    private VibratoHolder getTotalFingeringOfVibrato(char[] fingeringPatternOfNote, int vibratoId, String vibratoMask) {
+        VibratoPatternHolder vibratoPatternHolder = createVibratoPatternWithLeadingZeros(vibratoId, vibratoMask);
+        char[] vibrato = vibratoPatternHolder.fibratoPattern;
+        int offset = fingeringPatternOfNote.length - vibrato.length;
+        for (int i = 0; i < vibrato.length; i++) {
+            fingeringPatternOfNote[i + offset] = vibrato[i];
         }
-        String pattern = "";
-
-        for (int i = 0; i < (binaryPatternWithoutOctave.length - index + 1); i++) {
-            pattern += "1";
+        String idString = "";
+        for (char c : fingeringPatternOfNote) {
+            idString += c;
         }
-        try {
-            return Integer.parseInt(pattern, 2);
-        } catch (NumberFormatException e) {
-            return 0;
-        }
+        int totalVibratoId = Integer.parseInt(idString, 2);
+        return new VibratoHolder(totalVibratoId, vibratoPatternHolder.numberOfClosedVibratoFingers);
     }
 
     /**
-     * Calculates the index of the first open hole after the last closed hole from the top of the chanter
+     * Calculates the max id for a vibrato mask
      *
-     * @param binaryPatternWithoutOctave The fingering pattern without octave information
-     * @return The index
+     * @param vibratoMask The vibrato mask to check
+     * @return the max id that is a vibrato
      */
-    private int calcIndexOfFirstOpenHoleAfterLastClosed(char[] binaryPatternWithoutOctave) {
-        int index = binaryPatternWithoutOctave.length - 1;
-        while (index >= 0) {
-            if (binaryPatternWithoutOctave[index] == '0') {
-                return index + 1;
-            }
-            index--;
+    private int getMaxIdForVibratoMask(String vibratoMask) {
+        String p = "";
+        for (char c : createOnePattern(trimPattern(vibratoMask).length())) {
+            p += c;
         }
-        return 0;
+        return Integer.parseInt(p, 2);
     }
 
     /**
-     * Determines if it is a fingering position with cross-fingering, that would be handled differently
+     * Patterns may contain spaces for human readability. This method removes them
      *
-     * @return true if the fingering postion is cross-fingering
+     * @param pattern The pattern with spaces in it
+     * @return The pattern without spaces in it;
      */
-    private boolean isCrossFingering() {
-        boolean openFound = false;
-        boolean hasClosed = false;
-        for (char c : calcBinaryPatternWithoutOctave()) {
+    private String trimPattern(String pattern) {
+        return pattern.replace(" ", "").trim();
+    }
+
+    /**
+     * Creates a binary pattern for a specific vibrato based on the vibratoMask
+     *
+     * @param id          The id of the vibrato represents the bitmask of all vibrato fingers
+     * @param vibratoMask The vibrato mask defines which fingers are used for vibrato
+     * @return The binary pattern fo a specific vibrato
+     */
+    private VibratoPatternHolder createVibratoPatternWithLeadingZeros(int id, String vibratoMask) {
+        char[] pattern = toFixedLengthWithLeadingZeros(Integer.toBinaryString(id).toCharArray(), vibratoMask.length());
+        int fingerCount = 0;
+        for (char c : pattern) {
             if (c == '0') {
-                if (openFound) {
-                    return true;
-                }
-                hasClosed = true;
-            }
-            if (c == '1') {
-                openFound = true;
+                fingerCount++;
             }
         }
-        return false;
+        return new VibratoPatternHolder(pattern, fingerCount);
     }
 
     /**
-     * Calcs the binary pattern and removes octave information
+     * Adds leading 0 to a char array until it reached a fixed length
      *
-     * @return the binary pattern without octave information
+     * @param in          The array that may be too short
+     * @param fixedLength The fixed desired length
+     * @return A char array with fixedLength with leading 0 with the same pattern as in
      */
-    private char[] calcBinaryPatternWithoutOctave() {
-        char[] binaryPatternWithOctave = fingeringPosition.getBinaryPattern();
-        //remove octave
-        char[] binaryPatternWithoutOctave = new char[binaryPatternWithOctave.length - 1];
-        for (int i = 1; i < binaryPatternWithOctave.length; i++) {
-            binaryPatternWithoutOctave[i - 1] = binaryPatternWithOctave[i];
+    private char[] toFixedLengthWithLeadingZeros(char[] in, int fixedLength) {
+        char[] out = createZeroPattern(fixedLength);
+        int offset = out.length - in.length;
+        for (int i = 0; i < in.length; i++) {
+            out[i + offset] = in[i];
         }
-        return binaryPatternWithoutOctave;
+        return out;
     }
 
     /**
-     * Returns the last position from top down of the chanter where a finger is closed to knwo where to calculate all alternatives from.
+     * Creates a char[] with 0 in it
      *
-     * @param binaryPatternWithoutOctave The binary pattern of the fingering without octave
-     * @return The last postion from top down of the chanter where a finger is closed or -1 if all is closed
+     * @param length The length of the array
+     * @return a char[] with 0 in it
      */
-    private int indexOfBottomClosedHole(char[] binaryPatternWithoutOctave) {
-        for (int i = binaryPatternWithoutOctave.length - 1; i >= 0; i--) {
-            if (binaryPatternWithoutOctave[i] == '0') {
-                return i;
-            }
+    private char[] createZeroPattern(int length) {
+        char[] out = new char[length];
+        for (int i = 0; i < length; i++) {
+            out[i] = '0';
         }
-        return -1;
+        return out;
+    }
+
+    /**
+     * Creates a char[] with 1 in it
+     *
+     * @param length The length of the array
+     * @return a char[] with 1 in it
+     */
+    private char[] createOnePattern(int length) {
+        char[] out = new char[length];
+        for (int i = 0; i < length; i++) {
+            out[i] = '1';
+        }
+        return out;
     }
 }

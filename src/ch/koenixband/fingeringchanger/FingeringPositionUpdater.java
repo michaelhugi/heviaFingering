@@ -36,10 +36,11 @@ public class FingeringPositionUpdater {
      * Lets the user decide what note a fingering is, except when autoNote is inserted. In that case the method will just put this note without asking and go on
      *
      * @param fingeringPosition The fingering position to update
+     * @param vibratoMask       The fibrato mask for the fingering
      * @param autoNote          If not 0, the user won't be asked for the note but the note will apply itself
      */
-    public void updateFingeringByUser(FingeringPosition fingeringPosition, int autoNote) {
-        fingeringPosition.printFintering(fingering.getLowestMidiNote());
+    public void updateFingeringByUser(FingeringPosition fingeringPosition, String vibratoMask, int autoNote) {
+        //fingeringPosition.printFintering(fingering.getLowestMidiNote());
         final int midiNote;
         final int pitch;
         if (autoNote == 0) {
@@ -57,7 +58,7 @@ public class FingeringPositionUpdater {
         fingering.addOrReplaceFingeringPosition(fingeringPosition);
         fingering.addOrReplaceFingeringPosition(new FingeringOctaveAndBottomCalculator(fingeringPosition, fingering.getDefaultBottomPitch()).calculateOctaveAndClosedBottom());
 
-        for (FingeringPosition vibrato : new FingeringPositionVibratoCalculator(fingeringPosition).calculateVibratos(fingering.getDefaultPitch())) {
+        for (FingeringPosition vibrato : new FingeringPositionVibratoCalculator(fingeringPosition).calculateVibratos(fingering.getDefaultPitch(), vibratoMask)) {
             fingering.addOrReplaceFingeringPosition(vibrato);
             fingering.addOrReplaceFingeringPosition(new FingeringOctaveAndBottomCalculator(vibrato, fingering.getDefaultBottomPitch()).calculateOctaveAndClosedBottom());
         }
